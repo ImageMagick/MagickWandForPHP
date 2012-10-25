@@ -1,3 +1,6 @@
+2012-10-25  1.0.9-1 Cristy  <omicronpersei8@image...>
+  * Add support for MagickSetImageEndian().
+
 2011-11-26  1.0.9-1 Remi Collet <fedora@famil...>
   * MagickWand for PHP no longer fails to build in ZTS mode.
 
