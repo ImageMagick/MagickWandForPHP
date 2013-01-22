@@ -63,8 +63,9 @@ if test $PHP_MAGICKWAND != "no"; then
 
 		AC_DEFINE(HAVE_MAGICKWAND,1,[ ])
 
-		PHP_ADD_LIBRARY_WITH_PATH(MagickCore, $WAND_DIR/lib, MAGICKWAND_SHARED_LIBADD)
-		PHP_ADD_LIBRARY_WITH_PATH(MagickWand, $WAND_DIR/lib, MAGICKWAND_SHARED_LIBADD)
+    export ORIG_PKG_CONFIG_PATH="$PKG_CONFIG_PATH"
+    export PKG_CONFIG_PATH="`$WAND_CONFIG_PATH/MagickWand-config --prefix`/lib/pkgconfig/"
+
 		PHP_ADD_INCLUDE($WAND_DIR/include/ImageMagick)
 		AC_MSG_CHECKING(MagickWand-config --cppflags)
 		WAND_CPPFLAGS="`$WAND_CONFIG_PATH/MagickWand-config --cppflags`"
@@ -75,8 +76,9 @@ if test $PHP_MAGICKWAND != "no"; then
 		WAND_LIBS="`$WAND_CONFIG_PATH/MagickWand-config --libs`"
 		AC_MSG_RESULT($WAND_LIBS)
 		PHP_EVAL_LIBLINE($WAND_LIBS, MAGICKWAND_SHARED_LIBADD)
+    export PKG_CONFIG_PATH="$ORIG_PKG_CONFIG_PATH"
 
 		PHP_SUBST(MAGICKWAND_SHARED_LIBADD)
-		PHP_NEW_EXTENSION(magickwand, magickwand.c, $ext_shared)
+		PHP_NEW_EXTENSION(magickwand, magickwand.c, $ext_shared,,$WAND_CPPFLAGS)
 
 fi
