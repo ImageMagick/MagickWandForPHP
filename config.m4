@@ -30,11 +30,11 @@ if test $PHP_MAGICKWAND != "no"; then
 		IMAGEMAGICK_VERSION_MASK=`echo ${IMAGEMAGICK_VERSION_ORIG} | awk 'BEGIN { FS = "."; } { printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
 
 
-		AC_MSG_CHECKING(if ImageMagick version is at least 6.3.8)
-		if test "$IMAGEMAGICK_VERSION_MASK" -ge 6003008; then
+		AC_MSG_CHECKING(if ImageMagick version is at least 6.8.2)
+		if test "$IMAGEMAGICK_VERSION_MASK" -ge 6008002; then
 				AC_MSG_RESULT(found version $IMAGEMAGICK_VERSION_ORIG)
 		else
-				AC_MSG_ERROR(no. You need at least ImageMagick version 6.3.8 to use MagickWand for PHP.)
+				AC_MSG_ERROR(no. You need at least ImageMagick version 6.8.2 to use MagickWand for PHP.)
 		fi
 
 		AC_MSG_CHECKING(if PHP version is at least 4.1.3)

@@ -308,6 +308,7 @@ static MagickBooleanType
 #define PRV_IS_RenderingIntent( x ) (x == SaturationIntent || x == PerceptualIntent || x == AbsoluteIntent || x == RelativeIntent)  /* || x == UndefinedIntent */
 #define PRV_IS_ResolutionType( x ) (x == PixelsPerInchResolution || x == PixelsPerCentimeterResolution)  /* || x == UndefinedResolution */
 #define PRV_IS_ResourceType( x ) (x == AreaResource || x == DiskResource || x == FileResource || x == MapResource || x == MemoryResource)  /* || x == UndefinedResource */
+#define PRV_IS_StatisticType( x ) (x == GradientStatistic || x == MaximumStatistic || x == MeanStatistic || x == MedianStatistic || x == MinimumStatistic || x == ModeStatistic || x == NonpeakStatistic || x == StandardDeviationStatistic)  /* || x == UndefinedStatistic */
 #define PRV_IS_StorageType( x ) (x == CharPixel || x == ShortPixel || x == IntegerPixel || x == LongPixel || x == FloatPixel || x == DoublePixel)  /* || x == UndefinedPixel */
 #define PRV_IS_StretchType( x ) (x == NormalStretch || x == UltraCondensedStretch || x == ExtraCondensedStretch || x == CondensedStretch || x == SemiCondensedStretch || x == SemiExpandedStretch || x == ExpandedStretch || x == ExtraExpandedStretch || x == UltraExpandedStretch || x == AnyStretch)  /* || x == UndefinedStretch */
 #define PRV_IS_StyleType( x ) (x == NormalStyle || x == ItalicStyle || x == ObliqueStyle || x == AnyStyle)  /* || x == UndefinedStyle */

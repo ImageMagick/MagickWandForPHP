@@ -1047,6 +1047,7 @@ static const zend_function_entry magickwand_functions[] =
 	PHP_FE( magicksolarizeimage, NULL )
 	PHP_FE( magickspliceimage, NULL )
 	PHP_FE( magickspreadimage, NULL )
+	PHP_FE( magickstatisticimage, NULL )
 	PHP_FE( magicksteganoimage, NULL )
 	PHP_FE( magickstereoimage, NULL )
 	PHP_FE( magickstripimage, NULL )
@@ -1664,6 +1665,17 @@ PHP_MINIT_FUNCTION( magickwand )
 	MW_REGISTER_LONG_CONSTANT( FileResource );
 	MW_REGISTER_LONG_CONSTANT( MapResource );
 	MW_REGISTER_LONG_CONSTANT( MemoryResource );
+
+	/***** StatisticType *****/
+	MW_REGISTER_LONG_CONSTANT( UndefinedStatistic );
+	MW_REGISTER_LONG_CONSTANT( GradientStatistic );
+	MW_REGISTER_LONG_CONSTANT( MaximumStatistic );
+	MW_REGISTER_LONG_CONSTANT( MeanStatistic );
+	MW_REGISTER_LONG_CONSTANT( MedianStatistic );
+	MW_REGISTER_LONG_CONSTANT( MinimumStatistic );
+	MW_REGISTER_LONG_CONSTANT( ModeStatistic );
+	MW_REGISTER_LONG_CONSTANT( NonpeakStatistic );
+	MW_REGISTER_LONG_CONSTANT( StandardDeviationStatistic );
 
 	/***** StorageType *****/
 	MW_REGISTER_LONG_CONSTANT( UndefinedPixel );
@@ -3865,7 +3877,7 @@ PHP_FUNCTION( magickaverageimages )
 
 	MW_GET_POINTER_FROM_RSRC( MagickWand, magick_wand, &magick_wand_rsrc_zvl_p );
 
-	MW_SET_RET_WAND_RSRC_FROM_FUNC( MagickWand, MagickAverageImages( magick_wand ) );
+	MW_SET_RET_WAND_RSRC_FROM_FUNC( MagickWand, MagickEvaluateImages( magick_wand, MeanEvaluateOperator ) );
 }
 /* }}} */
 
@@ -5096,7 +5108,7 @@ PHP_FUNCTION( magickflattenimages )
 
 	MW_GET_POINTER_FROM_RSRC( MagickWand, magick_wand, &magick_wand_rsrc_zvl_p );
 
-	MW_SET_RET_WAND_RSRC_FROM_FUNC( MagickWand, MagickFlattenImages( magick_wand ) );
+	MW_SET_RET_WAND_RSRC_FROM_FUNC( MagickWand, MagickMergeImageLayers( magick_wand, FlattenLayer ) );
 }
 /* }}} */
 
@@ -5804,20 +5816,20 @@ PHP_FUNCTION( magickgetimageextrema )
 	MagickWand *magick_wand;
 	zval *magick_wand_rsrc_zvl_p;
 	long channel = -1;
-	unsigned long minima, maxima;
+	double minima, maxima;
 
 	MW_GET_2_ARG( "r|l", &magick_wand_rsrc_zvl_p, &channel );
 
 	MW_GET_POINTER_FROM_RSRC( MagickWand, magick_wand, &magick_wand_rsrc_zvl_p );
 
 	if ( channel == -1 ) {
-		MW_CHK_BOOL_RET_2_IDX_DBL_ARR( MagickGetImageExtrema( magick_wand, &minima, &maxima ),
-									   (double) minima, (double) maxima );
+		MW_CHK_BOOL_RET_2_IDX_DBL_ARR( MagickGetImageChannelRange( magick_wand, DefaultChannels, &minima, &maxima ),
+									   minima, maxima );
 	}
 	else {
 		MW_CHECK_CONSTANT( ChannelType, channel );
-		MW_CHK_BOOL_RET_2_IDX_DBL_ARR( MagickGetImageChannelExtrema( magick_wand, (ChannelType) channel, &minima, &maxima ),
-									   (double) minima, (double) maxima );
+		MW_CHK_BOOL_RET_2_IDX_DBL_ARR( MagickGetImageChannelRange( magick_wand, (ChannelType) channel, &minima, &maxima ),
+									   minima, maxima );
 	}
 }
 /* }}} */
@@ -6716,7 +6728,7 @@ PHP_FUNCTION( magickmapimage )
 
 	MW_GET_POINTER_FROM_RSRC( MagickWand, map_wnd, &map_wnd_rsrc_zvl_p );
 
-	MW_BOOL_FUNC_RETVAL_BOOL( MagickMapImage( magick_wand, map_wnd, MW_MK_MGCK_BOOL(dither) ) );
+	MW_BOOL_FUNC_RETVAL_BOOL( MagickRemapImage( magick_wand, map_wnd, MW_MK_MGCK_BOOL(dither) ) );
 }
 /* }}} */
 
@@ -9476,6 +9488,42 @@ PHP_FUNCTION( magickspreadimage )
 	MW_PRINT_DEBUG_INFO
 
 	MW_GET_MAGICKWAND_SET_DOUBLE_RET_BOOL( MagickSpreadImage );
+}
+/* }}} */
+
+/* {{{ proto float MagickStatisticImage( MagickWand magick_wand, StatisicType statisic, float width, float height, [, ChannelType channel] )
+*/
+PHP_FUNCTION( magickstatisticimage )
+{
+	MW_PRINT_DEBUG_INFO
+
+	MagickWand *magick_wand;
+	zval *magick_wand_rsrc_zvl_p;
+	long statistic, channel = -1;
+  double width,height;
+	MagickBooleanType magick_return;
+
+	MW_GET_5_ARG( "rldd|l", &magick_wand_rsrc_zvl_p, &statistic, &width, &height, &channel );
+
+	MW_GET_POINTER_FROM_RSRC( MagickWand, magick_wand, &magick_wand_rsrc_zvl_p );
+
+	MW_CHECK_CONSTANT( StatisticType, statistic );
+
+	if ( channel == -1 ) {
+		magick_return = MagickStatisticImage( magick_wand, (StatisticType) statistic, (size_t) (width+0.5), (size_t) (height+0.5) );
+	}
+	else {
+		MW_CHECK_CONSTANT( ChannelType, channel );
+		magick_return = (MagickBooleanType) MagickStatisticImageChannel(	magick_wand,
+																				(ChannelType) channel, (StatisticType) statistic,
+																				 (size_t) (width+0.5), (size_t) (height+0.5) );
+	}
+
+	if ( magick_return == MagickTrue ) {
+  	RETURN_TRUE;
+	}
+
+	RETURN_FALSE;
 }
 /* }}} */
 

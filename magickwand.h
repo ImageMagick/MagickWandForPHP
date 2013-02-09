@@ -558,6 +558,7 @@ extern zend_module_entry magickwand_module_entry;
 	PHP_FUNCTION( magicksolarizeimage );
 	PHP_FUNCTION( magickspliceimage );
 	PHP_FUNCTION( magickspreadimage );
+	PHP_FUNCTION( magickstatisticimage );
 	PHP_FUNCTION( magicksteganoimage );
 	PHP_FUNCTION( magickstereoimage );
 	PHP_FUNCTION( magickstripimage );
