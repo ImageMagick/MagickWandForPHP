@@ -1,3 +1,7 @@
+2012-10-25  1.0.9-1 Cristy  <omicronpersei8@image...>
+  * Add support for MagickStatisticImage() (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=10&t=22757).
+
 2013-01-22  1.0.9-2 Mikko Koppanen  <mikko.koppanen@gmail...>
   * Fixes build with newer ImageMagick
   * Fixes build when ImageMagick is installed in non-standard location
